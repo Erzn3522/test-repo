@@ -8,6 +8,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            /* Default: Warm Sunset */
+            --color-1: #FF6B6B;
+            --color-2: #FF8C42;
+            --color-3: #FFD93D;
+            --gradient-bg: linear-gradient(135deg, var(--color-1) 0%, var(--color-2) 50%, var(--color-3) 100%);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -26,7 +34,7 @@
             position: relative;
             width: 100vw;
             height: 100vh;
-            background: linear-gradient(135deg, #FF6B6B 0%, #FF8C42 50%, #FFD93D 100%);
+            background: var(--gradient-bg);
             background-size: 200% 200%;
             animation: gradientShift 8s ease infinite;
             display: flex;
@@ -371,7 +379,7 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: linear-gradient(135deg, #FF6B6B 0%, #FF8C42 50%, #FFD93D 100%);
+            background: var(--gradient-bg);
             background-size: 200% 200%;
             animation: gradientShift 8s ease infinite;
             display: none;
@@ -703,12 +711,201 @@
             }
         }
 
+        /* Color Picker Panel */
+        .color-picker-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(30px);
+            border-radius: 24px;
+            padding: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .color-picker-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            color: white;
+            font-weight: 600;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+        }
+
+        .color-picker-icon {
+            font-size: 1.3rem;
+        }
+
+        .color-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .color-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .color-option:hover {
+            transform: translateX(-5px) scale(1.05);
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .color-option.active {
+            border-color: white;
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 8px 24px rgba(255, 255, 255, 0.2);
+        }
+
+        .color-option.active::after {
+            content: '✓';
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .color-preview {
+            width: 60px;
+            height: 40px;
+            border-radius: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            flex-shrink: 0;
+        }
+
+        .color-name {
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 500;
+            flex: 1;
+        }
+
+        .toggle-picker {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-picker:hover {
+            transform: scale(1.1) rotate(90deg);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .toggle-picker.active {
+            transform: rotate(45deg);
+        }
+
+        .color-picker-panel.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(20px);
+        }
+
+        /* Cursor Trail Effect */
+        .cursor-trail {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: white;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
+                        0 0 40px rgba(255, 255, 255, 0.4);
+            animation: trailFade 0.8s ease-out forwards;
+        }
+
+        @keyframes trailFade {
+            to {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            pointer-events: none;
+            z-index: 9997;
+            animation: confettiFall 3s ease-out forwards;
+        }
+
+        @keyframes confettiFall {
+            to {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Swipe Indicator */
+        .swipe-indicator {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            padding: 12px 24px;
+            border-radius: 24px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            animation: fadeInOut 3s ease-in-out 2s;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; }
+            20%, 80% { opacity: 1; }
+        }
+
         /* Responsive */
         @media (max-width: 1400px) {
             .brand-name {
                 font-size: 4rem;
             }
-            
+
             .effect-preview {
                 width: 450px;
                 height: 550px;
@@ -719,14 +916,71 @@
             .brand-card {
                 padding: 60px 80px;
             }
-            
+
             .effects-menu {
                 width: 350px;
+            }
+
+            .color-picker-panel {
+                top: 10px;
+                right: 10px;
+                padding: 16px;
+            }
+
+            .toggle-picker {
+                top: 10px;
+                right: 10px;
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Color Picker Toggle Button -->
+    <div class="toggle-picker" id="togglePicker" onclick="toggleColorPicker()">🎨</div>
+
+    <!-- Color Picker Panel -->
+    <div class="color-picker-panel hidden" id="colorPickerPanel">
+        <div class="color-picker-header">
+            <span class="color-picker-icon">🎨</span>
+            <span>Renk Paleti Seç</span>
+        </div>
+        <div class="color-options">
+            <div class="color-option active" onclick="changeColorPalette('sunset')" data-palette="sunset">
+                <div class="color-preview" style="background: linear-gradient(135deg, #FF6B6B 0%, #FF8C42 50%, #FFD93D 100%);"></div>
+                <span class="color-name">Warm Sunset</span>
+            </div>
+            <div class="color-option" onclick="changeColorPalette('electric')" data-palette="electric">
+                <div class="color-preview" style="background: linear-gradient(135deg, #FF0080 0%, #7928CA 50%, #4CC9F0 100%);"></div>
+                <span class="color-name">Electric Neon</span>
+            </div>
+            <div class="color-option" onclick="changeColorPalette('aurora')" data-palette="aurora">
+                <div class="color-preview" style="background: linear-gradient(135deg, #A8EDEA 0%, #FED6E3 33%, #C2E9FB 66%, #E0C3FC 100%);"></div>
+                <span class="color-name">Aurora Dream</span>
+            </div>
+            <div class="color-option" onclick="changeColorPalette('cyberpunk')" data-palette="cyberpunk">
+                <div class="color-preview" style="background: linear-gradient(135deg, #0F2027 0%, #203A43 30%, #2C5364 70%, #FF0080 100%);"></div>
+                <span class="color-name">Cyberpunk Night</span>
+            </div>
+            <div class="color-option" onclick="changeColorPalette('tropical')" data-palette="tropical">
+                <div class="color-preview" style="background: linear-gradient(135deg, #FF6FB5 0%, #FF9A56 50%, #FFD76F 100%);"></div>
+                <span class="color-name">Tropical Sunset</span>
+            </div>
+            <div class="color-option" onclick="changeColorPalette('mint')" data-palette="mint">
+                <div class="color-preview" style="background: linear-gradient(135deg, #00F5A0 0%, #00D9F5 50%, #A78BFA 100%);"></div>
+                <span class="color-name">Mint Fresh</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Swipe Indicator -->
+    <div class="swipe-indicator">
+        <span>👆</span>
+        <span>Kaydırarak efekt değiştirin</span>
+    </div>
+
     <!-- Giriş Sayfası -->
     <div class="landing-page" id="landingPage">
         <!-- Asimetrik Fotoğraf Grid -->
@@ -859,6 +1113,194 @@
     </div>
 
     <script>
+        // Color Palettes
+        const colorPalettes = {
+            sunset: {
+                color1: '#FF6B6B',
+                color2: '#FF8C42',
+                color3: '#FFD93D',
+                gradient: 'linear-gradient(135deg, #FF6B6B 0%, #FF8C42 50%, #FFD93D 100%)'
+            },
+            electric: {
+                color1: '#FF0080',
+                color2: '#7928CA',
+                color3: '#4CC9F0',
+                gradient: 'linear-gradient(135deg, #FF0080 0%, #7928CA 50%, #4CC9F0 100%)'
+            },
+            aurora: {
+                color1: '#A8EDEA',
+                color2: '#FED6E3',
+                color3: '#E0C3FC',
+                gradient: 'linear-gradient(135deg, #A8EDEA 0%, #FED6E3 33%, #C2E9FB 66%, #E0C3FC 100%)'
+            },
+            cyberpunk: {
+                color1: '#0F2027',
+                color2: '#2C5364',
+                color3: '#FF0080',
+                gradient: 'linear-gradient(135deg, #0F2027 0%, #203A43 30%, #2C5364 70%, #FF0080 100%)'
+            },
+            tropical: {
+                color1: '#FF6FB5',
+                color2: '#FF9A56',
+                color3: '#FFD76F',
+                gradient: 'linear-gradient(135deg, #FF6FB5 0%, #FF9A56 50%, #FFD76F 100%)'
+            },
+            mint: {
+                color1: '#00F5A0',
+                color2: '#00D9F5',
+                color3: '#A78BFA',
+                gradient: 'linear-gradient(135deg, #00F5A0 0%, #00D9F5 50%, #A78BFA 100%)'
+            }
+        };
+
+        // Toggle Color Picker
+        function toggleColorPicker() {
+            const panel = document.getElementById('colorPickerPanel');
+            const toggle = document.getElementById('togglePicker');
+            panel.classList.toggle('hidden');
+            toggle.classList.toggle('active');
+        }
+
+        // Change Color Palette
+        function changeColorPalette(paletteName) {
+            const palette = colorPalettes[paletteName];
+            const root = document.documentElement;
+
+            // Update CSS variables
+            root.style.setProperty('--color-1', palette.color1);
+            root.style.setProperty('--color-2', palette.color2);
+            root.style.setProperty('--color-3', palette.color3);
+            root.style.setProperty('--gradient-bg', palette.gradient);
+
+            // Update active state
+            document.querySelectorAll('.color-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            document.querySelector(`[data-palette="${paletteName}"]`).classList.add('active');
+
+            // Create celebration particles
+            createCelebrationParticles();
+        }
+
+        // Cursor Trail Effect
+        let lastTrailTime = 0;
+        document.addEventListener('mousemove', function(e) {
+            const now = Date.now();
+            if (now - lastTrailTime > 50) { // Throttle to every 50ms
+                createCursorTrail(e.clientX, e.clientY);
+                lastTrailTime = now;
+            }
+        });
+
+        document.addEventListener('touchmove', function(e) {
+            const now = Date.now();
+            if (now - lastTrailTime > 50 && e.touches.length > 0) {
+                const touch = e.touches[0];
+                createCursorTrail(touch.clientX, touch.clientY);
+                lastTrailTime = now;
+            }
+        });
+
+        function createCursorTrail(x, y) {
+            const trail = document.createElement('div');
+            trail.className = 'cursor-trail';
+            trail.style.left = x + 'px';
+            trail.style.top = y + 'px';
+            document.body.appendChild(trail);
+
+            setTimeout(() => trail.remove(), 800);
+        }
+
+        // Confetti Effect
+        function createCelebrationParticles() {
+            const colors = ['#FF6B6B', '#FFD93D', '#4ECDC4', '#95E1D3', '#F38181', '#AA96DA'];
+
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * window.innerWidth + 'px';
+                    confetti.style.top = '-10px';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.width = (Math.random() * 10 + 5) + 'px';
+                    confetti.style.height = (Math.random() * 10 + 5) + 'px';
+                    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+
+                    const rotation = Math.random() * 360;
+                    const drift = (Math.random() - 0.5) * 200;
+                    confetti.style.setProperty('--drift', drift + 'px');
+
+                    document.body.appendChild(confetti);
+
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 30);
+            }
+        }
+
+        // Swipe Gesture Support
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchEndX = 0;
+        let touchEndY = 0;
+        let currentEffectIndex = 0;
+
+        const effectsMenu = document.getElementById('effectsMenu');
+        if (effectsMenu) {
+            effectsMenu.addEventListener('touchstart', function(e) {
+                touchStartX = e.changedTouches[0].screenX;
+                touchStartY = e.changedTouches[0].screenY;
+            }, false);
+
+            effectsMenu.addEventListener('touchend', function(e) {
+                touchEndX = e.changedTouches[0].screenX;
+                touchEndY = e.changedTouches[0].screenY;
+                handleSwipeGesture();
+            }, false);
+        }
+
+        function handleSwipeGesture() {
+            const diffX = touchStartX - touchEndX;
+            const diffY = touchStartY - touchEndY;
+
+            // Vertical swipe for effect navigation
+            if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > 50) {
+                if (diffY > 0) {
+                    // Swipe up - next effect
+                    currentEffectIndex = (currentEffectIndex + 1) % effects.length;
+                } else {
+                    // Swipe down - previous effect
+                    currentEffectIndex = (currentEffectIndex - 1 + effects.length) % effects.length;
+                }
+                showEffect(currentEffectIndex);
+            }
+        }
+
+        // Inactivity Timer (30 seconds)
+        let inactivityTimer;
+        let inactivityDuration = 30000; // 30 seconds
+
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(() => {
+                // Only reset if on selection page
+                if (document.getElementById('selectionPage').classList.contains('active')) {
+                    document.getElementById('selectionPage').classList.remove('active');
+                    document.getElementById('selectionPage').style.display = 'none';
+                    document.getElementById('landingPage').style.display = 'flex';
+                    document.getElementById('landingPage').classList.remove('fade-out');
+                    currentEffectIndex = 0;
+                }
+            }, inactivityDuration);
+        }
+
+        // Reset timer on any user interaction
+        ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'].forEach(event => {
+            document.addEventListener(event, resetInactivityTimer, true);
+        });
+
+        // Start the timer
+        resetInactivityTimer();
+
         // Efekt verileri
         const effects = [
             {
@@ -1023,8 +1465,24 @@
         // Efekt seçme
         function selectEffect() {
             const currentEffect = document.getElementById('previewTitle').textContent;
+
+            // Konfetti kutlaması
+            createCelebrationParticles();
+
             // Burada efekt seçim işlemi yapılacak
             console.log('Seçilen efekt:', currentEffect);
+
+            // Visual feedback
+            const button = document.querySelector('.select-button');
+            button.textContent = '✓ Seçildi!';
+            button.style.background = 'linear-gradient(135deg, #00C851, #007E33)';
+            button.style.color = 'white';
+
+            setTimeout(() => {
+                button.innerHTML = '<span style="position: relative; z-index: 1;">Bu Efekti Seç</span>';
+                button.style.background = 'white';
+                button.style.color = '#FF6B6B';
+            }, 2000);
         }
 
         // İlk efekti göster

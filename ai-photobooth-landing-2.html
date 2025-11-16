@@ -35,11 +35,18 @@
             position: relative;
             width: 100vw;
             min-height: 100vh;
-            background: var(--white);
+            background: linear-gradient(135deg, #fafafa 0%, #f5f5f5 50%, #fafafa 100%);
+            background-size: 200% 200%;
+            animation: gradientShift 8s ease infinite;
             display: flex;
             flex-direction: column;
             opacity: 1;
             transition: opacity 0.6s ease;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
         .landing-page.fade-out {
@@ -65,6 +72,12 @@
             font-weight: 700;
             letter-spacing: -0.5px;
             color: var(--black);
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
         }
 
         .nav-links {
@@ -116,11 +129,35 @@
             font-weight: 400;
             color: var(--black);
             letter-spacing: -2px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .hero-title .accent {
             font-style: italic;
             color: var(--accent);
+            display: inline-block;
+            animation: shimmer 3s ease-in-out infinite;
+            background: linear-gradient(90deg, var(--accent) 0%, var(--accent-light) 50%, var(--accent) 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { background-position: 0% center; }
+            50% { background-position: 100% center; }
         }
 
         .hero-description {
@@ -147,22 +184,43 @@
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 0 4px 20px rgba(10, 10, 10, 0.15);
+            position: relative;
+            animation: pulse 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 4px 20px rgba(10, 10, 10, 0.15), 0 0 0 0 rgba(255, 77, 0, 0.7);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 8px 30px rgba(10, 10, 10, 0.25), 0 0 0 20px rgba(255, 77, 0, 0);
+            }
         }
 
         .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(10, 10, 10, 0.25);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 12px 40px rgba(255, 77, 0, 0.4);
             background: var(--accent);
+            animation: none;
         }
 
         .cta-button::after {
             content: '→';
             font-size: 1.2rem;
             transition: transform 0.3s ease;
+            animation: arrowBounce 1.5s ease-in-out infinite;
+        }
+
+        @keyframes arrowBounce {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(5px); }
         }
 
         .cta-button:hover::after {
-            transform: translateX(4px);
+            animation: none;
+            transform: translateX(8px);
         }
 
         /* Visual Grid - Minimalist photo frames */
@@ -174,13 +232,14 @@
             height: 100%;
             pointer-events: none;
             overflow: hidden;
-            opacity: 0.08;
+            opacity: 0.12;
         }
 
         .frame {
             position: absolute;
-            border: 2px solid var(--black);
+            border: 3px solid var(--black);
             border-radius: 4px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
 
         .frame:nth-child(1) {
@@ -188,7 +247,7 @@
             height: 280px;
             top: 10%;
             left: 8%;
-            animation: float 8s ease-in-out infinite;
+            animation: float1 6s ease-in-out infinite;
         }
 
         .frame:nth-child(2) {
@@ -196,7 +255,7 @@
             height: 150px;
             top: 60%;
             left: 15%;
-            animation: float 10s ease-in-out infinite 1s;
+            animation: float2 7s ease-in-out infinite;
         }
 
         .frame:nth-child(3) {
@@ -204,7 +263,7 @@
             height: 240px;
             top: 15%;
             right: 10%;
-            animation: float 9s ease-in-out infinite 0.5s;
+            animation: float3 8s ease-in-out infinite;
         }
 
         .frame:nth-child(4) {
@@ -212,15 +271,164 @@
             height: 200px;
             top: 65%;
             right: 12%;
-            animation: float 11s ease-in-out infinite 1.5s;
+            animation: float4 5.5s ease-in-out infinite;
         }
 
-        @keyframes float {
+        @keyframes float1 {
             0%, 100% {
-                transform: translateY(0) rotate(0deg);
+                transform: translateY(0) translateX(0) rotate(0deg) scale(1);
             }
             50% {
-                transform: translateY(-20px) rotate(2deg);
+                transform: translateY(-30px) translateX(10px) rotate(3deg) scale(1.05);
+            }
+        }
+
+        @keyframes float2 {
+            0%, 100% {
+                transform: translateY(0) translateX(0) rotate(0deg) scale(1);
+            }
+            50% {
+                transform: translateY(-40px) translateX(-15px) rotate(-4deg) scale(1.08);
+            }
+        }
+
+        @keyframes float3 {
+            0%, 100% {
+                transform: translateY(0) translateX(0) rotate(0deg) scale(1);
+            }
+            50% {
+                transform: translateY(-35px) translateX(-10px) rotate(2deg) scale(1.06);
+            }
+        }
+
+        @keyframes float4 {
+            0%, 100% {
+                transform: translateY(0) translateX(0) rotate(0deg) scale(1);
+            }
+            50% {
+                transform: translateY(-45px) translateX(12px) rotate(-3deg) scale(1.1);
+            }
+        }
+
+        /* Floating Particles */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            opacity: 0.3;
+        }
+
+        .particle:nth-child(1) {
+            left: 20%;
+            animation: particleFloat1 12s ease-in-out infinite;
+        }
+
+        .particle:nth-child(2) {
+            left: 40%;
+            animation: particleFloat2 15s ease-in-out infinite;
+        }
+
+        .particle:nth-child(3) {
+            left: 60%;
+            animation: particleFloat3 18s ease-in-out infinite;
+        }
+
+        .particle:nth-child(4) {
+            left: 80%;
+            animation: particleFloat4 14s ease-in-out infinite;
+        }
+
+        .particle:nth-child(5) {
+            left: 50%;
+            animation: particleFloat1 16s ease-in-out infinite;
+        }
+
+        .particle:nth-child(6) {
+            left: 70%;
+            animation: particleFloat2 13s ease-in-out infinite;
+        }
+
+        @keyframes particleFloat1 {
+            0% {
+                transform: translateY(100vh) translateX(0) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100px) translateX(50px) scale(0);
+                opacity: 0;
+            }
+        }
+
+        @keyframes particleFloat2 {
+            0% {
+                transform: translateY(100vh) translateX(0) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100px) translateX(-50px) scale(0);
+                opacity: 0;
+            }
+        }
+
+        @keyframes particleFloat3 {
+            0% {
+                transform: translateY(100vh) translateX(0) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100px) translateX(30px) scale(0);
+                opacity: 0;
+            }
+        }
+
+        @keyframes particleFloat4 {
+            0% {
+                transform: translateY(100vh) translateX(0) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100px) translateX(-30px) scale(0);
+                opacity: 0;
             }
         }
 
@@ -235,6 +443,10 @@
 
         .stat-item {
             text-align: center;
+            animation: fadeInUp 1s ease-out;
+            animation-delay: calc(var(--delay) * 0.2s);
+            opacity: 0;
+            animation-fill-mode: forwards;
         }
 
         .stat-number {
@@ -243,6 +455,19 @@
             color: var(--black);
             line-height: 1;
             margin-bottom: 8px;
+            animation: numberPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            animation-delay: calc(var(--delay) * 0.2s + 0.3s);
+        }
+
+        @keyframes numberPop {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
 
         .stat-label {
@@ -250,6 +475,23 @@
             color: var(--gray);
             text-transform: uppercase;
             letter-spacing: 1px;
+        }
+
+        /* Touch Ripple Effect */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 77, 0, 0.4);
+            transform: scale(0);
+            animation: rippleEffect 0.8s ease-out;
+            pointer-events: none;
+        }
+
+        @keyframes rippleEffect {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
         }
 
         /* Selection Page - Editorial Layout */
@@ -435,8 +677,9 @@
             padding: 24px;
             margin-bottom: 12px;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             position: relative;
+            overflow: hidden;
         }
 
         .effect-item::before {
@@ -448,18 +691,45 @@
             width: 0;
             height: 60%;
             background: var(--accent);
-            transition: width 0.3s ease;
+            transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             border-radius: 0 4px 4px 0;
+        }
+
+        .effect-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 77, 0, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .effect-item:hover::after {
+            left: 100%;
         }
 
         .effect-item:hover {
             border-color: #e0e0e0;
-            transform: translateX(4px);
+            transform: translateX(8px) scale(1.02);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
 
         .effect-item.active {
             border-color: var(--accent);
             background: #fff8f5;
+            transform: translateX(8px) scale(1.02);
+            animation: cardPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes cardPulse {
+            0%, 100% {
+                box-shadow: 0 4px 20px rgba(255, 77, 0, 0.15);
+            }
+            50% {
+                box-shadow: 0 6px 30px rgba(255, 77, 0, 0.25);
+            }
         }
 
         .effect-item.active::before {
@@ -560,6 +830,16 @@
             <div class="frame"></div>
         </div>
 
+        <!-- Floating Particles -->
+        <div class="particles">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+        </div>
+
         <!-- Hero -->
         <section class="hero">
             <div class="hero-content">
@@ -575,15 +855,15 @@
 
         <!-- Stats -->
         <section class="stats">
-            <div class="stat-item">
+            <div class="stat-item" style="--delay: 1">
                 <div class="stat-number">10+</div>
                 <div class="stat-label">Pro Effects</div>
             </div>
-            <div class="stat-item">
+            <div class="stat-item" style="--delay: 2">
                 <div class="stat-number">4K</div>
                 <div class="stat-label">Output Quality</div>
             </div>
-            <div class="stat-item">
+            <div class="stat-item" style="--delay: 3">
                 <div class="stat-number">< 5s</div>
                 <div class="stat-label">Processing Time</div>
             </div>
@@ -607,7 +887,7 @@
                     Timeless black and white with high contrast and dramatic shadows.
                     Perfect for capturing raw emotion and creating cinematic portraits.
                 </p>
-                <button class="select-button" onclick="selectEffect()">Select this style</button>
+                <button class="select-button" onclick="selectEffect(event)">Select this style</button>
             </div>
         </div>
 
@@ -618,7 +898,7 @@
                 <p class="menu-subtitle">10 professional effects available</p>
             </div>
 
-            <div class="effect-item active" onclick="showEffect(0)">
+            <div class="effect-item active" onclick="showEffect(0, event)">
                 <div class="effect-item-header">
                     <div class="effect-item-name">Film Noir</div>
                     <div class="effect-number">01</div>
@@ -629,7 +909,7 @@
                 </div>
             </div>
 
-            <div class="effect-item" onclick="showEffect(1)">
+            <div class="effect-item" onclick="showEffect(1, event)">
                 <div class="effect-item-header">
                     <div class="effect-item-name">Golden Hour</div>
                     <div class="effect-number">02</div>
@@ -640,7 +920,7 @@
                 </div>
             </div>
 
-            <div class="effect-item" onclick="showEffect(2)">
+            <div class="effect-item" onclick="showEffect(2, event)">
                 <div class="effect-item-header">
                     <div class="effect-item-name">Neon City</div>
                     <div class="effect-number">03</div>
@@ -651,7 +931,7 @@
                 </div>
             </div>
 
-            <div class="effect-item" onclick="showEffect(3)">
+            <div class="effect-item" onclick="showEffect(3, event)">
                 <div class="effect-item-header">
                     <div class="effect-item-name">Vintage Film</div>
                     <div class="effect-number">04</div>
@@ -662,7 +942,7 @@
                 </div>
             </div>
 
-            <div class="effect-item" onclick="showEffect(4)">
+            <div class="effect-item" onclick="showEffect(4, event)">
                 <div class="effect-item-header">
                     <div class="effect-item-name">Studio Portrait</div>
                     <div class="effect-number">05</div>
@@ -673,7 +953,7 @@
                 </div>
             </div>
 
-            <div class="effect-item" onclick="showEffect(5)">
+            <div class="effect-item" onclick="showEffect(5, event)">
                 <div class="effect-item-header">
                     <div class="effect-item-name">Pastel Dream</div>
                     <div class="effect-number">06</div>
@@ -684,7 +964,7 @@
                 </div>
             </div>
 
-            <div class="effect-item" onclick="showEffect(6)">
+            <div class="effect-item" onclick="showEffect(6, event)">
                 <div class="effect-item-header">
                     <div class="effect-item-name">Urban Edge</div>
                     <div class="effect-number">07</div>
@@ -695,7 +975,7 @@
                 </div>
             </div>
 
-            <div class="effect-item" onclick="showEffect(7)">
+            <div class="effect-item" onclick="showEffect(7, event)">
                 <div class="effect-item-header">
                     <div class="effect-item-name">Magazine Cover</div>
                     <div class="effect-number">08</div>
@@ -706,7 +986,7 @@
                 </div>
             </div>
 
-            <div class="effect-item" onclick="showEffect(8)">
+            <div class="effect-item" onclick="showEffect(8, event)">
                 <div class="effect-item-header">
                     <div class="effect-item-name">Cinematic</div>
                     <div class="effect-number">09</div>
@@ -717,7 +997,7 @@
                 </div>
             </div>
 
-            <div class="effect-item" onclick="showEffect(9)">
+            <div class="effect-item" onclick="showEffect(9, event)">
                 <div class="effect-item-header">
                     <div class="effect-item-name">Ethereal Glow</div>
                     <div class="effect-number">10</div>
@@ -784,11 +1064,55 @@
             }
         ];
 
+        // Touch Ripple Effect Function
+        function createRipple(event, element) {
+            const ripple = document.createElement('div');
+            ripple.className = 'ripple';
+
+            const rect = element.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height) * 2;
+            const x = event.clientX - rect.left - size / 2;
+            const y = event.clientY - rect.top - size / 2;
+
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+
+            element.appendChild(ripple);
+
+            setTimeout(() => ripple.remove(), 800);
+        }
+
         // Navigate to selection page
-        document.getElementById('startButton').addEventListener('click', function() {
-            document.getElementById('landingPage').classList.add('fade-out');
+        const startButton = document.getElementById('startButton');
+        const landingPage = document.getElementById('landingPage');
+
+        // Add ripple effect to start button
+        startButton.addEventListener('click', function(e) {
+            createRipple(e, this);
+        });
+
+        // Make entire landing page clickable for touch screens
+        landingPage.addEventListener('click', function(e) {
+            // Don't trigger if clicking on nav links or button
+            if (e.target.closest('.nav-links') || e.target.closest('.cta-button')) {
+                return;
+            }
+
+            // Only start button actually navigates
+            if (e.target.closest('.cta-button')) {
+                this.classList.add('fade-out');
+                setTimeout(() => {
+                    this.style.display = 'none';
+                    document.getElementById('selectionPage').classList.add('active');
+                }, 600);
+            }
+        });
+
+        startButton.addEventListener('click', function() {
+            landingPage.classList.add('fade-out');
             setTimeout(() => {
-                document.getElementById('landingPage').style.display = 'none';
+                landingPage.style.display = 'none';
                 document.getElementById('selectionPage').classList.add('active');
             }, 600);
         });
@@ -803,8 +1127,14 @@
         }
 
         // Show effect preview
-        function showEffect(index) {
+        function showEffect(index, event) {
             const effect = effects[index];
+
+            // Add ripple effect if event exists
+            if (event) {
+                const target = event.currentTarget;
+                createRipple(event, target);
+            }
 
             // Update active state
             document.querySelectorAll('.effect-item').forEach((item, i) => {
@@ -828,14 +1158,37 @@
         }
 
         // Select effect
-        function selectEffect() {
+        function selectEffect(event) {
             const currentEffect = document.getElementById('effectTitle').textContent;
+
+            // Add ripple effect
+            if (event) {
+                createRipple(event, event.currentTarget);
+            }
+
             console.log('Selected effect:', currentEffect);
             // Add your effect selection logic here
         }
 
         // Initialize
         showEffect(0);
+
+        // Add ripple effects to all effect items
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.effect-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    createRipple(e, this);
+                });
+            });
+
+            // Add ripple to select button
+            const selectBtn = document.querySelector('.select-button');
+            if (selectBtn) {
+                selectBtn.addEventListener('click', function(e) {
+                    createRipple(e, this);
+                });
+            }
+        });
     </script>
 </body>
 </html>

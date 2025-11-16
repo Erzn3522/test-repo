@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Photo Booth</title>
+    <title>FRAME — AI Photo Studio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -14,850 +14,828 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            overflow: hidden;
-            cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
+        :root {
+            --black: #0a0a0a;
+            --white: #fafafa;
+            --gray: #666;
+            --accent: #ff4d00;
+            --accent-light: #ff6b2b;
         }
 
-        /* Giriş Sayfası */
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--white);
+            color: var(--black);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Landing Page */
         .landing-page {
             position: relative;
             width: 100vw;
-            height: 100vh;
-            background: linear-gradient(135deg, #FF6B6B 0%, #FF8C42 50%, #FFD93D 100%);
+            min-height: 100vh;
+            background: var(--white);
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 40px;
-            overflow: hidden;
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 1;
+            transition: opacity 0.6s ease;
         }
 
         .landing-page.fade-out {
             opacity: 0;
-            transform: scale(0.95);
         }
 
-        /* Asimetrik Fotoğraf Grid - Bento Style */
-        .photo-grid {
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 50px;
+            z-index: 100;
+            background: transparent;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: var(--black);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .nav-links a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--black);
+        }
+
+        /* Hero Section */
+        .hero {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 120px 50px 80px;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            text-align: center;
+        }
+
+        .eyebrow {
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .hero-title {
+            font-family: 'Instrument Serif', serif;
+            font-size: clamp(3.5rem, 8vw, 7rem);
+            line-height: 1.05;
+            margin-bottom: 30px;
+            font-weight: 400;
+            color: var(--black);
+            letter-spacing: -2px;
+        }
+
+        .hero-title .accent {
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        .hero-description {
+            font-size: 1.25rem;
+            line-height: 1.6;
+            color: var(--gray);
+            margin-bottom: 50px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 40px;
+            background: var(--black);
+            color: var(--white);
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 100px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 20px rgba(10, 10, 10, 0.15);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(10, 10, 10, 0.25);
+            background: var(--accent);
+        }
+
+        .cta-button::after {
+            content: '→';
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .cta-button:hover::after {
+            transform: translateX(4px);
+        }
+
+        /* Visual Grid - Minimalist photo frames */
+        .visual-grid {
             position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            grid-template-rows: repeat(4, 1fr);
-            gap: 20px;
-            padding: 40px;
-            opacity: 0.3;
-        }
-
-        .photo-item {
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(20px);
-            border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            pointer-events: none;
             overflow: hidden;
-            position: relative;
-            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 4rem;
+            opacity: 0.08;
         }
 
-        .photo-item:hover {
-            transform: scale(1.05) translateY(-10px);
-            opacity: 1;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        .frame {
+            position: absolute;
+            border: 2px solid var(--black);
+            border-radius: 4px;
         }
 
-        .photo-item:nth-child(1) {
-            grid-column: 1 / 3;
-            grid-row: 1 / 3;
-            animation: float1 6s ease-in-out infinite;
+        .frame:nth-child(1) {
+            width: 200px;
+            height: 280px;
+            top: 10%;
+            left: 8%;
+            animation: float 8s ease-in-out infinite;
         }
 
-        .photo-item:nth-child(2) {
-            grid-column: 3 / 5;
-            grid-row: 1 / 2;
-            animation: float2 7s ease-in-out infinite;
+        .frame:nth-child(2) {
+            width: 150px;
+            height: 150px;
+            top: 60%;
+            left: 15%;
+            animation: float 10s ease-in-out infinite 1s;
         }
 
-        .photo-item:nth-child(3) {
-            grid-column: 5 / 7;
-            grid-row: 1 / 3;
-            animation: float3 8s ease-in-out infinite;
+        .frame:nth-child(3) {
+            width: 180px;
+            height: 240px;
+            top: 15%;
+            right: 10%;
+            animation: float 9s ease-in-out infinite 0.5s;
         }
 
-        .photo-item:nth-child(4) {
-            grid-column: 1 / 2;
-            grid-row: 3 / 5;
-            animation: float1 9s ease-in-out infinite;
+        .frame:nth-child(4) {
+            width: 160px;
+            height: 200px;
+            top: 65%;
+            right: 12%;
+            animation: float 11s ease-in-out infinite 1.5s;
         }
 
-        .photo-item:nth-child(5) {
-            grid-column: 2 / 4;
-            grid-row: 3 / 4;
-            animation: float2 6.5s ease-in-out infinite;
-        }
-
-        .photo-item:nth-child(6) {
-            grid-column: 4 / 6;
-            grid-row: 2 / 4;
-            animation: float3 7.5s ease-in-out infinite;
-        }
-
-        .photo-item:nth-child(7) {
-            grid-column: 6 / 7;
-            grid-row: 3 / 5;
-            animation: float1 8.5s ease-in-out infinite;
-        }
-
-        .photo-item:nth-child(8) {
-            grid-column: 2 / 4;
-            grid-row: 4 / 5;
-            animation: float2 7s ease-in-out infinite;
-        }
-
-        @keyframes float1 {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-15px) rotate(1deg); }
-        }
-
-        @keyframes float2 {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(-1deg); }
-        }
-
-        @keyframes float3 {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-25px) rotate(1.5deg); }
-        }
-
-        /* Glassmorphism Merkez Kart */
-        .brand-card {
-            position: relative;
-            z-index: 10;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(30px);
-            border-radius: 40px;
-            padding: 80px 100px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2),
-                        inset 0 1px 0 rgba(255, 255, 255, 0.4);
-            transform: translateY(0);
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .brand-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.3),
-                        inset 0 1px 0 rgba(255, 255, 255, 0.5);
-        }
-
-        /* Tipografi Hiyerarşisi */
-        .brand-name {
-            font-size: 5rem;
-            font-weight: 800;
-            color: white;
-            text-align: center;
-            letter-spacing: 8px;
-            margin-bottom: 15px;
-            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            line-height: 1.1;
-        }
-
-        .brand-tagline {
-            font-size: 1.2rem;
-            font-weight: 300;
-            color: rgba(255, 255, 255, 0.85);
-            text-align: center;
-            letter-spacing: 3px;
-            margin-bottom: 40px;
-            text-transform: uppercase;
-        }
-
-        /* Dokunmatik UI Pattern */
-        .tap-indicator {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            color: white;
-            font-size: 1rem;
-            font-weight: 500;
-            opacity: 0.9;
-        }
-
-        .tap-icon {
-            width: 50px;
-            height: 50px;
-            background: rgba(255, 255, 255, 0.25);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: pulse 2s ease-in-out infinite;
-            border: 2px solid rgba(255, 255, 255, 0.4);
-        }
-
-        @keyframes pulse {
+        @keyframes float {
             0%, 100% {
-                transform: scale(1);
-                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+                transform: translateY(0) rotate(0deg);
             }
             50% {
-                transform: scale(1.1);
-                box-shadow: 0 0 0 15px rgba(255, 255, 255, 0);
+                transform: translateY(-20px) rotate(2deg);
             }
         }
 
-        /* Seçim Sayfası - Yeni Modern Tasarım */
+        /* Stats Section */
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 80px;
+            padding: 60px 50px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--black);
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Selection Page - Editorial Layout */
         .selection-page {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: linear-gradient(135deg, #FF6B6B 0%, #FF8C42 50%, #FFD93D 100%);
+            background: var(--white);
             display: none;
             opacity: 0;
         }
 
         .selection-page.active {
-            display: flex;
-            animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            display: grid;
+            grid-template-columns: 1fr 480px;
+            animation: fadeIn 0.6s ease forwards;
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
             to {
                 opacity: 1;
-                transform: scale(1);
             }
         }
 
-        /* Sol Taraf - Önizleme */
+        /* Left: Preview */
         .preview-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 80px 60px 60px;
+            background: var(--black);
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .preview-header {
+            position: relative;
+            z-index: 2;
+        }
+
+        .back-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--white);
+            padding: 12px 24px;
+            border-radius: 100px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .preview-content {
             flex: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: center;
-            padding: 60px;
             position: relative;
+            z-index: 2;
         }
 
-        /* Glassmorphism Preview Card */
-        .effect-preview {
-            width: 550px;
-            height: 600px;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(30px);
-            border-radius: 32px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            padding: 50px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2),
-                        inset 0 1px 0 rgba(255, 255, 255, 0.4);
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .effect-preview::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        .effect-preview:hover::before {
-            opacity: 1;
-        }
-
-        .preview-top {
-            text-align: center;
-        }
-
-        .effect-icon {
-            font-size: 6rem;
-            margin-bottom: 25px;
+        .effect-badge {
             display: inline-block;
-            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .effect-preview:hover .effect-icon {
-            transform: scale(1.2) rotate(5deg);
+            padding: 8px 16px;
+            background: var(--accent);
+            color: var(--white);
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+            width: fit-content;
         }
 
         .effect-title {
-            font-size: 2.5rem;
-            color: white;
-            font-weight: 700;
-            margin-bottom: 15px;
-            letter-spacing: 1px;
+            font-family: 'Instrument Serif', serif;
+            font-size: 4.5rem;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            font-weight: 400;
         }
 
         .effect-description {
-            font-size: 1.1rem;
-            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.15rem;
             line-height: 1.7;
-            font-weight: 300;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 500px;
+            margin-bottom: 50px;
         }
 
-        /* Modern Button */
         .select-button {
-            width: 100%;
-            padding: 22px 40px;
-            font-size: 1.3rem;
-            background: white;
-            color: #FF6B6B;
+            width: fit-content;
+            padding: 18px 40px;
+            background: var(--white);
+            color: var(--black);
             border: none;
-            border-radius: 16px;
+            border-radius: 100px;
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            position: relative;
-            overflow: hidden;
+            transition: all 0.3s ease;
         }
 
-        .select-button::before {
+        .select-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Background Pattern */
+        .preview-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.03;
+            z-index: 1;
+        }
+
+        .preview-bg::before {
             content: '';
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 107, 107, 0.1);
             transform: translate(-50%, -50%);
-            transition: width 0.6s ease, height 0.6s ease;
+            width: 600px;
+            height: 600px;
+            border: 2px solid var(--white);
+            border-radius: 50%;
         }
 
-        .select-button:hover::before {
-            width: 300px;
-            height: 300px;
-        }
-
-        .select-button:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
-        }
-
-        .select-button:active {
-            transform: translateY(-2px);
-        }
-
-        /* Sağ Taraf - Glassmorphism Menu */
+        /* Right: Effects Menu */
         .effects-menu {
-            width: 420px;
-            height: 100vh;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(20px);
-            padding: 50px 25px;
+            background: #f5f5f5;
+            padding: 80px 40px 40px;
             overflow-y: auto;
-            border-left: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: -20px 0 40px rgba(0, 0, 0, 0.1);
         }
 
         .effects-menu::-webkit-scrollbar {
-            width: 6px;
+            width: 4px;
         }
 
         .effects-menu::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
+            background: transparent;
         }
 
         .effects-menu::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 3px;
+            background: #ccc;
+            border-radius: 2px;
+        }
+
+        .menu-header {
+            margin-bottom: 40px;
         }
 
         .menu-title {
-            font-size: 1.4rem;
-            color: white;
-            font-weight: 600;
-            margin-bottom: 30px;
-            letter-spacing: 1px;
-            opacity: 0.9;
-        }
-
-        /* Swipe Indicator */
-        .swipe-hint {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.85rem;
-            margin-bottom: 25px;
-            font-weight: 400;
-        }
-
-        .swipe-icon {
             font-size: 1.5rem;
-            animation: swipe 2s ease-in-out infinite;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--black);
         }
 
-        @keyframes swipe {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
+        .menu-subtitle {
+            color: var(--gray);
+            font-size: 0.95rem;
         }
 
-        /* Effect Items - Card Style */
+        /* Effect Cards - Clean & Minimal */
         .effect-item {
-            background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 22px;
-            margin-bottom: 16px;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: var(--white);
             border: 2px solid transparent;
-            display: flex;
-            align-items: center;
-            gap: 18px;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
-            overflow: hidden;
         }
 
         .effect-item::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .effect-item:hover::before {
-            left: 100%;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 60%;
+            background: var(--accent);
+            transition: width 0.3s ease;
+            border-radius: 0 4px 4px 0;
         }
 
         .effect-item:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateX(-8px) scale(1.02);
-            border-color: rgba(255, 255, 255, 0.3);
+            border-color: #e0e0e0;
+            transform: translateX(4px);
         }
 
         .effect-item.active {
-            background: rgba(255, 255, 255, 0.25);
-            border-color: white;
-            transform: translateX(-8px) scale(1.02);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            border-color: var(--accent);
+            background: #fff8f5;
         }
 
-        .effect-item-icon {
-            font-size: 2.2rem;
-            min-width: 50px;
-            text-align: center;
-            transition: transform 0.3s ease;
+        .effect-item.active::before {
+            width: 4px;
         }
 
-        .effect-item:hover .effect-item-icon {
-            transform: scale(1.2);
-        }
-
-        .effect-item-content {
-            flex: 1;
+        .effect-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
         }
 
         .effect-item-name {
-            font-size: 1.15rem;
-            color: white;
+            font-size: 1.1rem;
             font-weight: 600;
-            margin-bottom: 4px;
+            color: var(--black);
         }
 
-        .effect-item-subtitle {
+        .effect-number {
             font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.6);
-            font-weight: 300;
+            color: var(--gray);
+            font-weight: 500;
         }
 
-        /* Parçacık Efekti */
-        .particle {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background: white;
-            border-radius: 50%;
-            pointer-events: none;
-            animation: particleFloat 1.2s ease-out forwards;
+        .effect-item-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
         }
 
-        @keyframes particleFloat {
-            to {
-                transform: translate(var(--tx), var(--ty)) scale(0);
-                opacity: 0;
-            }
+        .tag {
+            font-size: 0.75rem;
+            color: var(--gray);
+            padding: 4px 12px;
+            background: #f0f0f0;
+            border-radius: 100px;
         }
 
-        /* Ripple Effect */
-        .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.5);
-            transform: scale(0);
-            animation: ripple-animation 0.6s ease-out;
-            pointer-events: none;
-        }
-
-        @keyframes ripple-animation {
-            to {
-                transform: scale(4);
-                opacity: 0;
-            }
+        .effect-item.active .tag {
+            background: #ffe5d9;
+            color: var(--accent);
         }
 
         /* Responsive */
-        @media (max-width: 1400px) {
-            .brand-name {
-                font-size: 4rem;
+        @media (max-width: 1200px) {
+            .selection-page.active {
+                grid-template-columns: 1fr 400px;
             }
-            
-            .effect-preview {
-                width: 450px;
-                height: 550px;
+
+            .hero-title {
+                font-size: 4rem;
             }
         }
 
-        @media (max-width: 1200px) {
-            .brand-card {
-                padding: 60px 80px;
+        @media (max-width: 768px) {
+            .selection-page.active {
+                grid-template-columns: 1fr;
             }
-            
+
             .effects-menu {
-                width: 350px;
+                display: none;
+            }
+
+            .stats {
+                flex-direction: column;
+                gap: 40px;
+            }
+
+            .nav {
+                padding: 20px 30px;
+            }
+
+            .hero {
+                padding: 100px 30px 60px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Giriş Sayfası -->
+    <!-- Landing Page -->
     <div class="landing-page" id="landingPage">
-        <!-- Asimetrik Fotoğraf Grid -->
-        <div class="photo-grid">
-            <div class="photo-item">📸</div>
-            <div class="photo-item">✨</div>
-            <div class="photo-item">🎨</div>
-            <div class="photo-item">🌟</div>
-            <div class="photo-item">💫</div>
-            <div class="photo-item">🎭</div>
-            <div class="photo-item">🎪</div>
-            <div class="photo-item">🎬</div>
+        <!-- Navigation -->
+        <nav class="nav">
+            <div class="logo">FRAME</div>
+            <div class="nav-links">
+                <a href="#">Features</a>
+                <a href="#">Gallery</a>
+                <a href="#">Pricing</a>
+            </div>
+        </nav>
+
+        <!-- Visual Background -->
+        <div class="visual-grid">
+            <div class="frame"></div>
+            <div class="frame"></div>
+            <div class="frame"></div>
+            <div class="frame"></div>
         </div>
 
-        <!-- Glassmorphism Merkez Kart -->
-        <div class="brand-card">
-            <h1 class="brand-name">AURA BOOTH</h1>
-            <p class="brand-tagline">AI-Powered Photo Experience</p>
-            <div class="tap-indicator">
-                <div class="tap-icon">👆</div>
-                <span>Dokunun ve Başlayın</span>
+        <!-- Hero -->
+        <section class="hero">
+            <div class="hero-content">
+                <div class="eyebrow">AI Photo Studio</div>
+                <h1 class="hero-title">Transform moments into <span class="accent">masterpieces</span></h1>
+                <p class="hero-description">
+                    Professional AI-powered photo effects that capture emotion, style, and authenticity.
+                    Create stunning visuals in seconds.
+                </p>
+                <button class="cta-button" id="startButton">Start Creating</button>
             </div>
-        </div>
+        </section>
+
+        <!-- Stats -->
+        <section class="stats">
+            <div class="stat-item">
+                <div class="stat-number">10+</div>
+                <div class="stat-label">Pro Effects</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">4K</div>
+                <div class="stat-label">Output Quality</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">< 5s</div>
+                <div class="stat-label">Processing Time</div>
+            </div>
+        </section>
     </div>
 
-    <!-- Seçim Sayfası -->
+    <!-- Selection Page -->
     <div class="selection-page" id="selectionPage">
+        <!-- Left: Preview -->
         <div class="preview-section">
-            <div class="effect-preview" id="effectPreview">
-                <div class="preview-top">
-                    <div class="effect-icon" id="previewIcon">✨</div>
-                    <div class="effect-title" id="previewTitle">Vintage Film</div>
-                    <div class="effect-description" id="previewDescription">
-                        Nostaljik bir görünüm için klasik film efekti. Fotoğraflarınıza zamansız bir retro hava katın ve unutulmaz anları vintage tarzda yakalayın.
-                    </div>
-                </div>
-                <button class="select-button" onclick="selectEffect()">
-                    <span style="position: relative; z-index: 1;">Bu Efekti Seç</span>
-                </button>
+            <div class="preview-bg"></div>
+
+            <div class="preview-header">
+                <button class="back-button" onclick="goBack()">← Back</button>
+            </div>
+
+            <div class="preview-content" id="previewContent">
+                <div class="effect-badge" id="effectBadge">Classic</div>
+                <h2 class="effect-title" id="effectTitle">Film Noir</h2>
+                <p class="effect-description" id="effectDescription">
+                    Timeless black and white with high contrast and dramatic shadows.
+                    Perfect for capturing raw emotion and creating cinematic portraits.
+                </p>
+                <button class="select-button" onclick="selectEffect()">Select this style</button>
             </div>
         </div>
 
-        <div class="effects-menu" id="effectsMenu">
-            <h2 class="menu-title">Efekt Seçin</h2>
-            <div class="swipe-hint">
-                <span class="swipe-icon">☝️</span>
-                <span>Kaydırarak efektleri inceleyin</span>
+        <!-- Right: Effects Menu -->
+        <div class="effects-menu">
+            <div class="menu-header">
+                <h3 class="menu-title">Choose your style</h3>
+                <p class="menu-subtitle">10 professional effects available</p>
             </div>
-            
+
             <div class="effect-item active" onclick="showEffect(0)">
-                <div class="effect-item-icon">✨</div>
-                <div class="effect-item-content">
-                    <div class="effect-item-name">Vintage Film</div>
-                    <div class="effect-item-subtitle">Klasik & Nostaljik</div>
+                <div class="effect-item-header">
+                    <div class="effect-item-name">Film Noir</div>
+                    <div class="effect-number">01</div>
+                </div>
+                <div class="effect-item-tags">
+                    <span class="tag">Classic</span>
+                    <span class="tag">B&W</span>
                 </div>
             </div>
 
             <div class="effect-item" onclick="showEffect(1)">
-                <div class="effect-item-icon">🌈</div>
-                <div class="effect-item-content">
-                    <div class="effect-item-name">Neon Dreams</div>
-                    <div class="effect-item-subtitle">Canlı & Modern</div>
+                <div class="effect-item-header">
+                    <div class="effect-item-name">Golden Hour</div>
+                    <div class="effect-number">02</div>
+                </div>
+                <div class="effect-item-tags">
+                    <span class="tag">Warm</span>
+                    <span class="tag">Natural</span>
                 </div>
             </div>
 
             <div class="effect-item" onclick="showEffect(2)">
-                <div class="effect-item-icon">🎨</div>
-                <div class="effect-item-content">
-                    <div class="effect-item-name">Pop Art</div>
-                    <div class="effect-item-subtitle">Cesur & Sanatsal</div>
+                <div class="effect-item-header">
+                    <div class="effect-item-name">Neon City</div>
+                    <div class="effect-number">03</div>
+                </div>
+                <div class="effect-item-tags">
+                    <span class="tag">Vibrant</span>
+                    <span class="tag">Modern</span>
                 </div>
             </div>
 
             <div class="effect-item" onclick="showEffect(3)">
-                <div class="effect-item-icon">🌸</div>
-                <div class="effect-item-content">
-                    <div class="effect-item-name">Pastel Soft</div>
-                    <div class="effect-item-subtitle">Yumuşak & Romantik</div>
+                <div class="effect-item-header">
+                    <div class="effect-item-name">Vintage Film</div>
+                    <div class="effect-number">04</div>
+                </div>
+                <div class="effect-item-tags">
+                    <span class="tag">Retro</span>
+                    <span class="tag">Grain</span>
                 </div>
             </div>
 
             <div class="effect-item" onclick="showEffect(4)">
-                <div class="effect-item-icon">🔮</div>
-                <div class="effect-item-content">
-                    <div class="effect-item-name">Cyberpunk</div>
-                    <div class="effect-item-subtitle">Futuristik & Teknolojik</div>
+                <div class="effect-item-header">
+                    <div class="effect-item-name">Studio Portrait</div>
+                    <div class="effect-number">05</div>
+                </div>
+                <div class="effect-item-tags">
+                    <span class="tag">Professional</span>
+                    <span class="tag">Clean</span>
                 </div>
             </div>
 
             <div class="effect-item" onclick="showEffect(5)">
-                <div class="effect-item-icon">🎭</div>
-                <div class="effect-item-content">
-                    <div class="effect-item-name">Dramatic B&W</div>
-                    <div class="effect-item-subtitle">Klasik & Güçlü</div>
+                <div class="effect-item-header">
+                    <div class="effect-item-name">Pastel Dream</div>
+                    <div class="effect-number">06</div>
+                </div>
+                <div class="effect-item-tags">
+                    <span class="tag">Soft</span>
+                    <span class="tag">Romantic</span>
                 </div>
             </div>
 
             <div class="effect-item" onclick="showEffect(6)">
-                <div class="effect-item-icon">🌟</div>
-                <div class="effect-item-content">
-                    <div class="effect-item-name">Glamour Glow</div>
-                    <div class="effect-item-subtitle">Işıltılı & Şık</div>
+                <div class="effect-item-header">
+                    <div class="effect-item-name">Urban Edge</div>
+                    <div class="effect-number">07</div>
+                </div>
+                <div class="effect-item-tags">
+                    <span class="tag">Gritty</span>
+                    <span class="tag">Contemporary</span>
                 </div>
             </div>
 
             <div class="effect-item" onclick="showEffect(7)">
-                <div class="effect-item-icon">🎪</div>
-                <div class="effect-item-content">
-                    <div class="effect-item-name">Carnival Fun</div>
-                    <div class="effect-item-subtitle">Eğlenceli & Renkli</div>
+                <div class="effect-item-header">
+                    <div class="effect-item-name">Magazine Cover</div>
+                    <div class="effect-number">08</div>
+                </div>
+                <div class="effect-item-tags">
+                    <span class="tag">Editorial</span>
+                    <span class="tag">Bold</span>
                 </div>
             </div>
 
             <div class="effect-item" onclick="showEffect(8)">
-                <div class="effect-item-icon">🌙</div>
-                <div class="effect-item-content">
-                    <div class="effect-item-name">Moonlight</div>
-                    <div class="effect-item-subtitle">Gizemli & Büyülü</div>
+                <div class="effect-item-header">
+                    <div class="effect-item-name">Cinematic</div>
+                    <div class="effect-number">09</div>
+                </div>
+                <div class="effect-item-tags">
+                    <span class="tag">Widescreen</span>
+                    <span class="tag">Film</span>
                 </div>
             </div>
 
             <div class="effect-item" onclick="showEffect(9)">
-                <div class="effect-item-icon">🔥</div>
-                <div class="effect-item-content">
-                    <div class="effect-item-name">Fire & Ice</div>
-                    <div class="effect-item-subtitle">Dinamik & Kontrastlı</div>
+                <div class="effect-item-header">
+                    <div class="effect-item-name">Ethereal Glow</div>
+                    <div class="effect-number">10</div>
+                </div>
+                <div class="effect-item-tags">
+                    <span class="tag">Dreamy</span>
+                    <span class="tag">Luminous</span>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Efekt verileri
         const effects = [
             {
-                icon: '✨',
+                badge: 'Classic',
+                title: 'Film Noir',
+                description: 'Timeless black and white with high contrast and dramatic shadows. Perfect for capturing raw emotion and creating cinematic portraits.'
+            },
+            {
+                badge: 'Natural',
+                title: 'Golden Hour',
+                description: 'Warm, sun-kissed tones that recreate the magic of sunset lighting. Adds depth and natural beauty to every frame.'
+            },
+            {
+                badge: 'Modern',
+                title: 'Neon City',
+                description: 'Bold, vibrant colors with cyberpunk aesthetics. Electric blues and magentas that pop with urban energy.'
+            },
+            {
+                badge: 'Retro',
                 title: 'Vintage Film',
-                description: 'Nostaljik bir görünüm için klasik film efekti. Fotoğraflarınıza zamansız bir retro hava katın ve unutulmaz anları vintage tarzda yakalayın.',
-                gradient: 'linear-gradient(135deg, #f093fb, #f5576c)'
+                description: 'Authentic film grain and faded colors that transport you back decades. Nostalgic warmth with imperfect perfection.'
             },
             {
-                icon: '🌈',
-                title: 'Neon Dreams',
-                description: 'Canlı neon renkler ve parlak ışıltılar. Modern ve dikkat çekici bir görünüm için ideal seçim.',
-                gradient: 'linear-gradient(135deg, #4facfe, #00f2fe)'
+                badge: 'Professional',
+                title: 'Studio Portrait',
+                description: 'Clean, polished look with perfect skin tones and balanced lighting. Professional quality for headshots and formal portraits.'
             },
             {
-                icon: '🎨',
-                title: 'Pop Art',
-                description: 'Andy Warhol tarzı renkli ve cesur pop art efekti. Sanatsal bir dokunuş ile fotoğraflarınızı özel kılın.',
-                gradient: 'linear-gradient(135deg, #fa709a, #fee140)'
+                badge: 'Romantic',
+                title: 'Pastel Dream',
+                description: 'Soft, muted pastels with an airy, dreamy atmosphere. Gentle tones that evoke tenderness and elegance.'
             },
             {
-                icon: '🌸',
-                title: 'Pastel Soft',
-                description: 'Yumuşak pastel tonlar ve dreamy atmosfer. Romantik anlar ve düğünler için mükemmel bir seçim.',
-                gradient: 'linear-gradient(135deg, #a8edea, #fed6e3)'
+                badge: 'Contemporary',
+                title: 'Urban Edge',
+                description: 'Gritty, high-contrast look with desaturated tones. Street photography aesthetic with raw authenticity.'
             },
             {
-                icon: '🔮',
-                title: 'Cyberpunk',
-                description: 'Futuristik ve teknolojik görünüm. Mor ve mavi tonlarla geleceğin estetiğini yakalayın.',
-                gradient: 'linear-gradient(135deg, #667eea, #764ba2)'
+                badge: 'Editorial',
+                title: 'Magazine Cover',
+                description: 'High-impact, fashion-forward styling with punchy colors. Bold and confident for standout visuals.'
             },
             {
-                icon: '🎭',
-                title: 'Dramatic B&W',
-                description: 'Yüksek kontrast siyah beyaz. Dramatik ve klasik bir atmosfer ile duygusal derinlik.',
-                gradient: 'linear-gradient(135deg, #434343, #000000)'
+                badge: 'Cinematic',
+                title: 'Cinematic',
+                description: 'Film-grade color grading with widescreen framing. Hollywood-quality color science and atmosphere.'
             },
             {
-                icon: '🌟',
-                title: 'Glamour Glow',
-                description: 'Parlak ve ışıltılı bir görünüm. Özel günler ve kutlamalar için profesyonel bir dokunuş.',
-                gradient: 'linear-gradient(135deg, #ffecd2, #fcb69f)'
-            },
-            {
-                icon: '🎪',
-                title: 'Carnival Fun',
-                description: 'Eğlenceli ve renkli karnaval atmosferi. Neşeli ve hareketli bir efekt ile coşku dolu anlar.',
-                gradient: 'linear-gradient(135deg, #ff6e7f, #bfe9ff)'
-            },
-            {
-                icon: '🌙',
-                title: 'Moonlight',
-                description: 'Ay ışığı estetiği ile gizemli ve büyülü bir atmosfer. Gece çekimleri için ideal.',
-                gradient: 'linear-gradient(135deg, #2c3e50, #3498db)'
-            },
-            {
-                icon: '🔥',
-                title: 'Fire & Ice',
-                description: 'Sıcak ve soğuk tonların dinamik karşıtlığı. Enerji dolu ve etkileyici bir görsel deneyim.',
-                gradient: 'linear-gradient(135deg, #FF6B6B, #4ECDC4)'
+                badge: 'Dreamy',
+                title: 'Ethereal Glow',
+                description: 'Soft luminosity with gentle highlights and hazy atmosphere. Otherworldly beauty that feels almost surreal.'
             }
         ];
 
-        // Parçacık efekti oluştur
-        function createParticles(x, y) {
-            for (let i = 0; i < 25; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = x + 'px';
-                particle.style.top = y + 'px';
-                
-                const angle = (Math.PI * 2 * i) / 25;
-                const velocity = 40 + Math.random() * 60;
-                const tx = Math.cos(angle) * velocity;
-                const ty = Math.sin(angle) * velocity;
-                
-                particle.style.setProperty('--tx', tx + 'px');
-                particle.style.setProperty('--ty', ty + 'px');
-                
-                document.body.appendChild(particle);
-                
-                setTimeout(() => particle.remove(), 1200);
-            }
-        }
-
-        // Ripple efekti
-        function createRipple(e, element) {
-            const ripple = document.createElement('div');
-            ripple.className = 'ripple';
-            
-            const rect = element.getBoundingClientRect();
-            const size = Math.max(rect.width, rect.height);
-            const x = e.clientX - rect.left - size / 2;
-            const y = e.clientY - rect.top - size / 2;
-            
-            ripple.style.width = ripple.style.height = size + 'px';
-            ripple.style.left = x + 'px';
-            ripple.style.top = y + 'px';
-            
-            element.appendChild(ripple);
-            
-            setTimeout(() => ripple.remove(), 600);
-        }
-
-        // Landing page'e tıklama
-        document.getElementById('landingPage').addEventListener('click', function(e) {
-            createParticles(e.clientX, e.clientY);
-            createRipple(e, this);
-            
-            this.classList.add('fade-out');
-            
+        // Navigate to selection page
+        document.getElementById('startButton').addEventListener('click', function() {
+            document.getElementById('landingPage').classList.add('fade-out');
             setTimeout(() => {
-                this.style.display = 'none';
+                document.getElementById('landingPage').style.display = 'none';
                 document.getElementById('selectionPage').classList.add('active');
-            }, 800);
+            }, 600);
         });
 
-        // Efekt göster
+        // Go back to landing
+        function goBack() {
+            document.getElementById('selectionPage').classList.remove('active');
+            setTimeout(() => {
+                document.getElementById('landingPage').style.display = 'flex';
+                document.getElementById('landingPage').classList.remove('fade-out');
+            }, 100);
+        }
+
+        // Show effect preview
         function showEffect(index) {
             const effect = effects[index];
-            
-            // Menüdeki aktif öğeyi güncelle
+
+            // Update active state
             document.querySelectorAll('.effect-item').forEach((item, i) => {
                 item.classList.toggle('active', i === index);
             });
-            
-            // Önizlemeyi güncelle - smooth transition
-            const preview = document.getElementById('effectPreview');
-            const icon = document.getElementById('previewIcon');
-            const title = document.getElementById('previewTitle');
-            const description = document.getElementById('previewDescription');
-            
-            // Fade out
-            preview.style.opacity = '0';
-            preview.style.transform = 'scale(0.95)';
-            
+
+            // Update preview with fade
+            const content = document.getElementById('previewContent');
+            content.style.opacity = '0';
+            content.style.transform = 'translateY(10px)';
+
             setTimeout(() => {
-                icon.textContent = effect.icon;
-                title.textContent = effect.title;
-                description.textContent = effect.description;
-                preview.style.background = `${effect.gradient}`;
-                
-                // Fade in
-                preview.style.opacity = '1';
-                preview.style.transform = 'scale(1)';
+                document.getElementById('effectBadge').textContent = effect.badge;
+                document.getElementById('effectTitle').textContent = effect.title;
+                document.getElementById('effectDescription').textContent = effect.description;
+
+                content.style.transition = 'all 0.4s ease';
+                content.style.opacity = '1';
+                content.style.transform = 'translateY(0)';
             }, 200);
         }
 
-        // Effect item'lara ripple efekti ekle
-        document.querySelectorAll('.effect-item').forEach(item => {
-            item.addEventListener('click', function(e) {
-                createRipple(e, this);
-            });
-        });
-
-        // Select button'a ripple efekti
-        document.querySelector('.select-button').addEventListener('click', function(e) {
-            createRipple(e, this);
-        });
-
-        // Efekt seçme
+        // Select effect
         function selectEffect() {
-            const currentEffect = document.getElementById('previewTitle').textContent;
-            // Burada efekt seçim işlemi yapılacak
-            console.log('Seçilen efekt:', currentEffect);
+            const currentEffect = document.getElementById('effectTitle').textContent;
+            console.log('Selected effect:', currentEffect);
+            // Add your effect selection logic here
         }
 
-        // İlk efekti göster
+        // Initialize
         showEffect(0);
-
-        // Smooth scroll için
-        document.getElementById('effectsMenu').addEventListener('wheel', function(e) {
-            e.preventDefault();
-            this.scrollTop += e.deltaY;
-        }, { passive: false });
     </script>
 </body>
 </html>
